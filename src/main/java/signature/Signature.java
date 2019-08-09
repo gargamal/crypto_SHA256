@@ -7,8 +7,11 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.Base64;
+import java.util.logging.Logger;
 
-public interface Signature {
+public final class Signature {
+
+    static final Logger logger = Logger.getLogger(Signature.class.getName());
 
     /**
      * Encript in base 64
@@ -16,9 +19,10 @@ public interface Signature {
      * @param word text to ecript
      * @return La chaine signé en Base 64
      */
-    static String make(String word) {
+    public static String make(String word) {
 
         final PrivateKey privateKey = KeyGenerator.getKeyPair().getPrivate();
+
         try {
             final java.security.Signature privateSignature = java.security.Signature.getInstance("SHA256withRSA");
             privateSignature.initSign(privateKey);
@@ -40,8 +44,10 @@ public interface Signature {
      * @param signature signature maked
      * @return true is returned if signature has the same base that word
      */
-    static boolean verify(String word, String signature) {
+    public static boolean verify(String word, String signature) {
+
         final PublicKey publicKey = KeyGenerator.getKeyPair().getPublic();
+        logger.info("b64PublicKey=" + Base64.getEncoder().encodeToString(publicKey.getEncoded()));
 
         try {
             final java.security.Signature publicSignature = java.security.Signature.getInstance("SHA256withRSA");
